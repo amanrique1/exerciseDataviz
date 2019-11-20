@@ -40,7 +40,7 @@ li.enter()
  */
 
 
- //RETO 2
+//RETO 2
 /*
 const svg = canvas.append("svg");
 const fig = svg.selectAll("rect").data(data);
@@ -113,46 +113,54 @@ let draw=(data2,numMayor)=>{
 
 //RETO 4
 
-let draw=(data2,numMayorX,numMayorY,numMayorZ)=>{
+let draw = (data2, numMayorX, numMayorY, numMayorZ) => {
     const width = 700;
     const height = 500;
     const margin = { top: 10, left: 50, bottom: 40, right: 10 };
     const iwidth = width - margin.left - margin.right;
     const iheight = height - margin.top - margin.bottom;
-    
+
     const svg = canvas.append("svg");
     svg.attr("width", width);
     svg.attr("height", height);
-    
+
     let g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top})`);
-    
+
     const y = d3.scaleLinear()
-        .domain([0, numMayorY])
+        .domain([0, numMayorY+25])
         .range([iheight, 0]);
-    
-    const x = d3.scaleBand()
-        .domain([0, numMayorX])
+
+    const x = d3.scaleLinear()
+        .domain([0, numMayorX+6000])
         .range([0, iwidth]);
-    
+
     const circles = g.selectAll("circle").data(data2);
-    
+
     circles.enter().append("circle")
-        .attr("r", d => d.purchasingpower/numMayorZ)
+        .attr("r", d => 100 * d.population / numMayorZ)
         .style("fill", "steelblue")
         .attr("cx", d => x(d.purchasingpower))
         .attr("cy", d => y(d.lifeexpectancy))
-        
+
+    circles.enter().append("text")
+        .attr("x", d => x(d.purchasingpower - 500))
+        .attr("y", d => y(d.lifeexpectancy))
+        .attr("font-size", "10px")
+        .attr("font-family", "sans-serif")
+        .text(d => d.country)
+
+
     g.append("g")
         .classed("x--axis", true)
         .call(d3.axisBottom(x))
         .attr("transform", `translate(0, ${iheight})`);
-    
+
     g.append("g")
         .classed("y--axis", true)
         .call(d3.axisLeft(y));
-    }
-   d3.json("https://gist.githubusercontent.com/josejbocanegra/000e838b77c6ec8e5d5792229c1cdbd0/raw/83cd9161e28e308ef8c5363e217bad2b6166f21a/countries.json").then(data => {
-    draw(data,81.2,34435.37,204341763);
+}
+d3.json("https://gist.githubusercontent.com/josejbocanegra/000e838b77c6ec8e5d5792229c1cdbd0/raw/83cd9161e28e308ef8c5363e217bad2b6166f21a/countries.json").then(data => {
+    draw(data, 34435.37, 81.2, 204341763);
 });
 
 //FIN RETO 4
